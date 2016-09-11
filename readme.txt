@@ -23,6 +23,9 @@ Macro will pause if not active.
 -Press F9 to select exploration path.
 -Press F8 to begin.
 
+Explorations will repeat based on the energy setting in /data/explorations/'yourexploration'.ini
+If you want it to run more often lower the energy number.
+
 ##########################
 Troubleshooting
 ##########################
@@ -42,8 +45,8 @@ Any popups from the task bar can cause issues if they overlap Nox.
 
 todo:
 -cleanup/fix selectexp
--level up popup
 -add pixelsearch on gil
 -clearing custom attacks
 -boss custom attack
 -improve popup detection
+-level up popup
