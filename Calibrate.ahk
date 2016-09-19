@@ -19,8 +19,6 @@ Global Left
 Global Right
 Global Exploration
 
-Exploration:=%A_ScriptDir%/data/Explorations/Dwarfs Forge.ini
-
 ^1::TestPixel()
 F1::Calibrate()
 f11::
@@ -63,7 +61,7 @@ Calibrate()
 	IfNotExist, %A_ScriptDir%/data/config/config.ini
 	{
 	GetWinInfo()
-	IniWrite, %Exploration%, %A_ScriptDir%/data/config/config.ini, Exploration, Current
+	IniWrite, NA, %A_ScriptDir%/data/config/config.ini, Exploration, Current
 	IniWrite, %wintitle%, %A_ScriptDir%/data/config/config.ini, Window, WinTitle
 	IniWrite, %wintext%, %A_ScriptDir%/data/config/config.ini, Window, WinText
 	IniWrite, %MiddleX%, %A_ScriptDir%/data/config/config.ini, Window, MiddleX
