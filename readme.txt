@@ -33,13 +33,3 @@ If you run into further issues try these steps first:
 Disable windows screensavers & power settings to turn off your monitor.
 It can mess with combat detection and cause crashes.
 Any popups from the task bar can cause issues if they overlap Nox.
-
-##########################
-Optional
-##########################
-Add pushbullet api to get notifications when script gets lost.
-
-Edit data/config/config.ini with
-
-[PushBullet]
-API=API-CODE-HERE

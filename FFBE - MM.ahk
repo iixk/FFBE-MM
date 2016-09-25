@@ -9,6 +9,7 @@ SetWorkingDir %A_ScriptDir%
 CoordMode, Mouse, Relative
 SetControlDelay -1
 SetFormat, float, 0
+OnExit, EXIT_LABEL
 
 Global debug
 Global debug2
@@ -24,10 +25,63 @@ Global debug3
 
 LoadConfig()
 
-settimer start1, 0
+if DebugOn
+{
+	settimer start1, 0
+	return
+}
+
+start1:
+if !GetKeyState("capslock","T")
+{
+	if tt
+	{
+	    	tooltip
+	}
+}
+else
+{ ; if on
+
+ CoordMode, ToolTip, Screen 
+ CoordMode, Mouse, Relative
+ MouseGetPos xx, yy 
+ spx := xx / MiddleX
+ spy := yy / MiddleY
+ tt = 1
+ tooltip %MiddleX% %MiddleY% %xx% %yy% -- %spx% - %spy%`nIn Combat: %inCombat%`nFightCount: %FightCount% - LastCombat: %LastCombat%`nDebug: %debug%`nDebug2: %debug2%`nDebug3: %debug3%, 0, 0 
+ PrintScreen:: 
+ clipboard =%xx%, %yy%
+ return
+}
 return
 
-f12::reload
+if DebugOn
+{
+	Numpad8::Move("U")
+	Numpad2::Move("D")
+	Numpad4::Move("L")
+	Numpad6::Move("R")
+	Numpad9::Move("UR")
+	Numpad7::Move("UL")
+	Numpad1::Move("DL")
+	Numpad3::Move("DR")
+
+	f1::CompleteDungeon()
+	f2::msgbox %energy%
+	f3::ClearZone(2, "LR", 900)
+	f4::
+	{
+		test:=CheckScreen("fight", "reward1")
+		;test:=CheckScreen2()
+		msgbox %test%
+	}
+}
+
+f12::
+{
+	Gdip_Shutdown(pToken)
+	reload
+}
 F8::
 {
 	while (true)
@@ -105,3 +159,8 @@ Timer(Timer_Name := "", Timer_Opt := "D")
     if (Timer_Opt = "E" or Timer_Opt = "Elapse")
         return Timer[Timer_Name,"Elapse"]
 }
+
+EXIT_LABEL: ; be really sure the script will shutdown GDIP
+Gdip_Shutdown(gdipToken)
+EXITAPP
+return

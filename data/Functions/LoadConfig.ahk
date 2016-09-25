@@ -11,6 +11,7 @@ Global EnergyTimer
 Global Rotate
 Global winid
 Global PB_Token
+Global DebugOn
 
 LoadConfig()
 {
@@ -51,6 +52,8 @@ LoadConfig()
 				IniWrite, %Down%, %A_ScriptDir%/data/config/config.ini, Window, Down
 				IniWrite, %Left%, %A_ScriptDir%/data/config/config.ini, Window, Left
 				IniWrite, %Right%, %A_ScriptDir%/data/config/config.ini, Window, Right
+				IniWrite, , %A_ScriptDir%/data/config/config.ini, PushBullet, PB_Token
+				IniWrite, , %A_ScriptDir%/data/config/config.ini, Debug, Debug
 			}
 				
 		}
@@ -64,8 +67,10 @@ LoadConfig()
 	IniRead, Left, %A_ScriptDir%/data/config/config.ini, Window, Left
 	IniRead, Right, %A_ScriptDir%/data/config/config.ini, Window, Right
 	IniRead, Exploration, %A_ScriptDir%/data/config/config.ini, Exploration, Current
-	IniRead, Energy, %A_ScriptDir%/data/Explorations/%Exploration%.ini, Exploration, Energy
+	IniRead, ExpFile, %A_ScriptDir%/data/config/config.ini, Exploration, File
+	IniRead, Energy, %A_ScriptDir%/data/Explorations/%ExpFile%, Exploration, Energy
 	IniRead, PB_Token, %A_ScriptDir%/data/config/config.ini, PushBullet, API
+	IniRead, DebugOn, %A_ScriptDir%/data/config/config.ini, Debug, Debug
 	WinGet, winid, ID, ahk_class %wintitle%
 	EnergyTimer := Energy * 300000
 	return

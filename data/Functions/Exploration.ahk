@@ -19,8 +19,7 @@ EnterExploration()
 		{
 			PB("Items Full")
 		}
-		msgbox "Items Full"
-		exitapp
+		msgbox Error: Items Full`n`nPlease press f12 and retry script.
 	}
 	Check:=CheckScreen("fight", "step1")
 	if Check
@@ -46,9 +45,13 @@ EnterExploration()
 			Move("M", , 6000, 1,.77)		;Default to slot 1
 		}
 	}
-	else if PB_Token
+	else 
 	{
-		PB("Stuck on EntExp1")
+		if PB_Token
+		{
+			PB("Stuck on EntExp1")
+		}
+		msgbox Error: Lost path entering exploration. (step 1)`n`nPlease press f12 and retry script.
 	}
 		
 	Check:=CheckScreen("popup", "energy")		;Check for Full Energy
@@ -66,9 +69,13 @@ EnterExploration()
 	{
 			Move("M", , 6000, 1,.77)			;Pick friend
 	}
-	else if PB_Token
+	else
 	{
-		PB("Stuck on EntExp2")
+		if PB_Token
+		{
+			PB("Stuck on EntExp2")
+		}
+		msgbox Error: Lost path entering exploration. (step 2)`n`nPlease press f12 and retry script.
 	}
 	
 	Check:=CheckScreen("fight", "step3")
@@ -76,9 +83,13 @@ EnterExploration()
 	{
 			Move("M", , 6000, 1, 1.8)			;Depart & next
 	}
-	else if PB_Token
+	else
 	{
-		PB("Stuck on EntExp3")
+		if PB_Token
+		{
+			PB("Stuck on EntExp3")
+		}
+		msgbox Error: Lost path entering exploration. (step 3)`n`nPlease press f12 and retry script.
 	}
 ;	Color1 := 0x302A01
 ;	PixelGetColor quest, MiddleX, MiddleY

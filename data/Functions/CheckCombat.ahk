@@ -1,4 +1,3 @@
-;OnExit, EXIT_LABEL
 ;img1 = %A_ScriptDir%/data/img/combat/ic1.png
 
 CheckCombat()
@@ -88,7 +87,9 @@ CheckScreen(path, simg:=0)
 		}
 	}
 }
-	
+
+pToken := Gdip_Startup()
+
 ImgSrc(img)
 {
 	If !pToken := Gdip_Startup()
@@ -97,26 +98,25 @@ ImgSrc(img)
 		ExitApp
 	}
 
-	pToken := Gdip_Startup()
+;	pToken := Gdip_Startup()						;moved up, only call once
 	WinGetPos, x, y, w, h, ahk_class %wintitle%
 	loc= %x%|%y%|%w%|%h%
 	
 	bmpHaystack:=Gdip_BitmapFromScreen(loc)
-	;bmpHaystack := Gdip_BitmapFromHWND(winid)
 	bmpNeedle := Gdip_CreateBitmapFromFile(img)
 	RET := Gdip_ImageSearch(bmpHaystack,bmpNeedle,LIST,0,0,0,0,0,0xFFFFFF,1,0)
 	
-	file=%a_scriptdir%\test.png
-	Gdip_SaveBitmapToFile(bmpHaystack, file)
+;	file=%a_scriptdir%\test.png
+;	Gdip_SaveBitmapToFile(bmpHaystack, file)
 	
 	Gdip_DisposeImage(bmpHaystack)
 	Gdip_DisposeImage(bmpNeedle)
 	DeleteObject(bmpHaystack)
 	DeleteObject(bmpNeedle)
-	Gdip_Shutdown(pToken)
+;	Gdip_Shutdown(pToken)							;moved to main ahk
 	
-	;MsgBox, % img "`n`nReturned: " RET "`n`n" LIST
-	WinSet,Redraw,, Ahk_id %winid%
+;	MsgBox, % img "`n`nReturned: " RET "`n`n" LIST	;test only
+;	WinSet,Redraw,, Ahk_id %winid%
 	if RET>0
 	{
 		return %RET%
@@ -127,7 +127,3 @@ ImgSrc(img)
 	}
 }
 
-;EXIT_LABEL: ; be really sure the script will shutdown GDIP
-;Gdip_Shutdown(gdipToken)
-;EXITAPP
-;return
