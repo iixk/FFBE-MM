@@ -52,8 +52,8 @@ LoadConfig()
 				IniWrite, %Down%, %A_ScriptDir%/data/config/config.ini, Window, Down
 				IniWrite, %Left%, %A_ScriptDir%/data/config/config.ini, Window, Left
 				IniWrite, %Right%, %A_ScriptDir%/data/config/config.ini, Window, Right
-				IniWrite, , %A_ScriptDir%/data/config/config.ini, PushBullet, PB_Token
-				IniWrite, , %A_ScriptDir%/data/config/config.ini, Debug, Debug
+				IniWrite, % "", %A_ScriptDir%/data/config/config.ini, PushBullet, PB_Token
+				IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, Debug, Debug
 			}
 				
 		}
