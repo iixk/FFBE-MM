@@ -88,14 +88,13 @@ CheckScreen(path, simg:=0)
 	}
 }
 
-pToken := Gdip_Startup()
-
 ImgSrc(img)
 {
 	If !pToken := Gdip_Startup()
 	{
-		MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
-		ExitApp
+		pToken := Gdip_Startup()
+		;MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
+		;ExitApp
 	}
 	WinWaitActive ahk_class %wintitle%
 ;	pToken := Gdip_Startup()						;moved up, only call once
