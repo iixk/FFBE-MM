@@ -4,7 +4,6 @@ ProcessSteps(exp)
 {
 	ImgFile=
 	iniread path, %exp%, Path, PathName
-	iniread ImgFile, %exp%, Path, ImgFile
 	x := 0
 	Loop
 	{

@@ -127,6 +127,11 @@ CollectRewards()
 
 ClearZone(z, m, fc)
 {
+	iniread ImgFile, %A_ScriptDir%/data/Explorations/%ExpFile%, Path, ImgFile%z%
+	IfNotExist, %A_ScriptDir%/data/Explorations/%ImgFile%
+	{
+		ImgFile=						;check if imgfile exists - default to timer
+	}
 	if ImgFile
 	{
 	;Check Gil on first round

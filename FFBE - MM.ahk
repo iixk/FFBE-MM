@@ -79,7 +79,10 @@ if DebugOn
 
 f12::
 {
-	Gdip_Shutdown(pToken)
+	If pToken := Gdip_Startup()
+	{
+		Gdip_Shutdown(pToken)
+	}
 	reload
 }
 F8::

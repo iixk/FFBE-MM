@@ -12,6 +12,7 @@ Global Rotate
 Global winid
 Global PB_Token
 Global DebugOn
+Global ExpFile
 
 LoadConfig()
 {
