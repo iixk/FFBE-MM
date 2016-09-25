@@ -97,7 +97,7 @@ ImgSrc(img)
 		MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
 		ExitApp
 	}
-
+	WinWaitActive ahk_class %wintitle%
 ;	pToken := Gdip_Startup()						;moved up, only call once
 	WinGetPos, x, y, w, h, ahk_class %wintitle%
 	loc= %x%|%y%|%w%|%h%
