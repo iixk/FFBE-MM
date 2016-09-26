@@ -25,39 +25,29 @@ LoadConfig()
 		IfMsgBox, yes
 		{
 			FileCreateDir, %A_ScriptDir%/data/config
-			Msgbox Open Nox and press F1.
-			keywait, F1, D T60
-			if errorlevel
+			Msgbox Open Nox and press OK.
+			GetWinInfo()
+			if MiddleX != 300 || MiddleY != 495
 			{
-				msgbox Timed Out`nScript will exit.
-				exitapp
-			}
-			else
-			{
-				GetWinInfo()
-				if MiddleX != 300 || MiddleY != 495
+				Msgbox, 4, , Window size different.`n`nResize Window?
+				IfMsgBox, yes
 				{
-					Msgbox, 4, , Window size different.`n`nResize Window?
-					IfMsgBox, yes
-					{
-						WinGetClass, wintitle, A
-						WinMove, ahk_class %wintitle%,,,, 600, 990
-						GetWinInfo()
-					}
+					WinGetClass, wintitle, A
+					WinMove, ahk_class %wintitle%,,,, 600, 990
+					GetWinInfo()
 				}
-				IniWrite, NA, %A_ScriptDir%/data/config/config.ini, Exploration, Current
-				IniWrite, %wintitle%, %A_ScriptDir%/data/config/config.ini, Window, WinTitle
-				IniWrite, %wintext%, %A_ScriptDir%/data/config/config.ini, Window, WinText
-				IniWrite, %MiddleX%, %A_ScriptDir%/data/config/config.ini, Window, MiddleX
-				IniWrite, %MiddleY%, %A_ScriptDir%/data/config/config.ini, Window, MiddleY
-				IniWrite, %Up%, %A_ScriptDir%/data/config/config.ini, Window, Up
-				IniWrite, %Down%, %A_ScriptDir%/data/config/config.ini, Window, Down
-				IniWrite, %Left%, %A_ScriptDir%/data/config/config.ini, Window, Left
-				IniWrite, %Right%, %A_ScriptDir%/data/config/config.ini, Window, Right
-				IniWrite, % "", %A_ScriptDir%/data/config/config.ini, PushBullet, PB_Token
-				IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, Debug, Debug
 			}
-				
+			IniWrite, NA, %A_ScriptDir%/data/config/config.ini, Exploration, Current
+			IniWrite, %wintitle%, %A_ScriptDir%/data/config/config.ini, Window, WinTitle
+			IniWrite, %wintext%, %A_ScriptDir%/data/config/config.ini, Window, WinText
+			IniWrite, %MiddleX%, %A_ScriptDir%/data/config/config.ini, Window, MiddleX
+			IniWrite, %MiddleY%, %A_ScriptDir%/data/config/config.ini, Window, MiddleY
+			IniWrite, %Up%, %A_ScriptDir%/data/config/config.ini, Window, Up
+			IniWrite, %Down%, %A_ScriptDir%/data/config/config.ini, Window, Down
+			IniWrite, %Left%, %A_ScriptDir%/data/config/config.ini, Window, Left
+			IniWrite, %Right%, %A_ScriptDir%/data/config/config.ini, Window, Right
+			IniWrite, % "", %A_ScriptDir%/data/config/config.ini, PushBullet, PB_Token
+			IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, Debug, Debug	
 		}
 	}
 	IniRead, wintitle, %A_ScriptDir%/data/config/config.ini, Window, WinTitle
