@@ -60,3 +60,17 @@ Fighting Bosses
 ##########################
 Syntax:
 FightBoss	-no options as of now
+
+##########################
+INI File
+##########################
+Example:
+
+[Exploration]
+Title=Earth Shrine Exploration		-Title of exploration
+Energy=3				-Energy to wait between runs
+Realeng=3				-Energy cost of each run
+
+[Path]
+PathName=Earth Shrine Exp.path		-file name for path
+ImgFile=Earth Shrine Exp		-[optional] if this is defined a gil image search file will be generated on first run.

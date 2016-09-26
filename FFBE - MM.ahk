@@ -67,7 +67,7 @@ if DebugOn
 	Numpad3::Move("DR")
 
 	f1::CompleteDungeon()
-	f2::msgbox %energy%
+	f2::CheckCombat()
 	f3::ClearZone(2, "LR", 900)
 	f4::
 	{

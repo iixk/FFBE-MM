@@ -1,0 +1,12 @@
+TakeImg,fight,step1,247,226,350,243
+M,,,,1.41
+TakeImg,fight,step2,275,224,314,237
+M,,,,.77
+TakeImg,fight,step3,246,880,272,909
+M,,6000,,1.8
+TakeImg,combat,ic1,40,940,66,960,Click auto and hit OK.
+DL
+TakeImg,combat,ic2,210,941,223,955,Wait for results screen and hit OK.
+Sleep,45000
+TakeImg,fight,reward1,272,881,328,903
+M,5,4000,,1.8

@@ -3,11 +3,19 @@
 ProcessSteps(exp)
 {
 	ImgFile=
-	iniread path, %exp%, Path, PathName
+	if exp = Calibrate
+	{
+		path = %A_ScriptDir%/data/Functions/calibrate.path
+	}
+	else
+	{
+		iniread path, %exp%, Path, PathName
+		path = %A_ScriptDir%/data/Explorations/%path%
+	}
 	x := 0
 	Loop
 	{
-		FileReadLine, mv, %A_ScriptDir%/data/Explorations/%path%, %A_Index%
+		FileReadLine, mv, %path%, %A_Index%
 		if ErrorLevel
 			break
 		x := x + 1
@@ -20,6 +28,8 @@ ProcessSteps(exp)
 		move3 =
 		move4 = 
 		move5 =
+		move6 = 
+		move7 =
 		StringSplit, move, mv, `,
 		debug3 = %A_Index% - %move1% - %move2% - %move3% - %move4% - %move5%
 		if move1 = ClearZone
@@ -37,6 +47,15 @@ ProcessSteps(exp)
 		{
 			debug = Dungeon
 			ClearZone(1, "Dungeon", 120)
+		}
+		else if move1 = TakeImg
+		{
+			debug = TakeImg
+			TakeImg(move2, move3, move4, move5, move6, move7)
+		}
+		else if move1 = Sleep
+		{
+			sleep, move2
 		}
 		else if move1 != ClearZone || move1 != FightBoss
 		{

@@ -91,18 +91,6 @@ EnterExploration()
 		}
 		msgbox Error: Lost path entering exploration. (step 3)`n`nPlease press f12 and retry script.
 	}
-;	Color1 := 0x302A01
-;	PixelGetColor quest, MiddleX, MiddleY
-;	if quest = %Color1%
-;	{
-;		Move("M", , 2000, .52, 1.39)
-;	}
-	
-;	Move("M", 3,3000,.53, 1.4)		;Cancel Quest
-;	Move("M", 2,3000,.23,.46)		;Go back
-
-;	Move("M", , 6000, 1,.77)			;Pick friend
-;	Move("M", , 6000, 1, 1.8)			;Depart & next
 	return
 }
 
@@ -127,16 +115,31 @@ CollectRewards()
 
 ClearZone(z, m, fc)
 {
-	iniread ImgFile, %A_ScriptDir%/data/Explorations/%ExpFile%, Path, ImgFile%z%
-	IfNotExist, %A_ScriptDir%/data/Explorations/%ImgFile%
+	IfNotExist, %A_ScriptDir%/data/img/combat/inexp.png		;check for image file
 	{
-		ImgFile=						;check if imgfile exists - default to timer
+		Msgbox, Error: Missing image file.`n`nEnsure you are in a exploration and press OK.
+		TakeImg("combat", "inexp", 548, 933, 561, 945)		;save img of menu button
+	}
+	iniread ImgFile, %A_ScriptDir%/data/Explorations/%ExpFile%, Path, ImgFile
+	if ImgFile = ERROR								;Check if imagefile defined
+	{
+		ImgFile=
+	}
+	else
+	{
+		ImgFile = %ImgFile%%z%
+		IfNotExist, %A_ScriptDir%/data/img/explorations/%ImgFile%.png		;check if defined file exists
+		{
+			FightCount := fc * 1000
+			NewImgFile = %ImgFile%			;trigger new image file
+			ImgFile=
+		}
 	}
 	if ImgFile
 	{
 	;Check Gil on first round
 		Move("M",,,1.83,1.9)		;click menu
-		gil := CheckGil(ImgFile)
+		gil := CheckScreen("explorations", ImgFile)
 		if gil
 		{
 			Move("M",,,1.83,1.9)		;click out of menu
@@ -223,6 +226,13 @@ ClearZone(z, m, fc)
 			}
 			continue
 		}
+	}
+	if NewImgFile
+	{
+		Move("M",,,1.83,1.9)		;click menu
+		TakeImg("explorations", NewImgFile, 104, 796, 178, 816)		;save gil img
+		Move("M",,,1.83,1.9)		;click out of menu
+		NewImgFile =
 	}
 	return
 }
