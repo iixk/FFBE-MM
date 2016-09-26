@@ -29,15 +29,15 @@ LoadConfig()
 			Sleep, 1000
 			WinActivate, ahk_class Qt5QWindowIcon
 			GetWinInfo()
-			if MiddleX != 300 || MiddleY != 495
-			{
-				Msgbox, 4, , Window size different.`n`nResize Window?
-				IfMsgBox, yes
-				{
-					WinMove, ahk_class %wintitle%,,,, 600, 990
-					GetWinInfo()
-				}
-			}
+;not working			if MiddleX != 300 || MiddleY != 495
+;			{
+;				Msgbox, 4, , Window size different.`n`nResize Window?
+;				IfMsgBox, yes
+;				{
+;					WinMove, ahk_class %wintitle%,,,, 600, 990
+;					GetWinInfo()
+;				}
+;			}
 			IniWrite, NA, %A_ScriptDir%/data/config/config.ini, Exploration, Current
 			IniWrite, %wintitle%, %A_ScriptDir%/data/config/config.ini, Window, WinTitle
 			IniWrite, %wintext%, %A_ScriptDir%/data/config/config.ini, Window, WinText
