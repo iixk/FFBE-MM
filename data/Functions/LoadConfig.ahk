@@ -26,13 +26,14 @@ LoadConfig()
 		{
 			FileCreateDir, %A_ScriptDir%/data/config
 			Msgbox Open Nox and press OK.
+			Sleep, 1000
+			WinActivate, ahk_class Qt5QWindowIcon
 			GetWinInfo()
 			if MiddleX != 300 || MiddleY != 495
 			{
 				Msgbox, 4, , Window size different.`n`nResize Window?
 				IfMsgBox, yes
 				{
-					WinGetClass, wintitle, A
 					WinMove, ahk_class %wintitle%,,,, 600, 990
 					GetWinInfo()
 				}
