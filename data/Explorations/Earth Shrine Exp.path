@@ -1,4 +1,5 @@
-ClearZone,1,UD,900
+U,1
+ClearZone,1,UD,300
 D,3
 U
 UL,,500

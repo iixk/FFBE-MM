@@ -13,6 +13,7 @@ Global winid
 Global PB_Token
 Global DebugOn
 Global ExpFile
+Global LoadedExp
 
 LoadConfig()
 {
@@ -74,6 +75,31 @@ LoadConfig()
 	IniRead, DebugOn, %A_ScriptDir%/data/config/config.ini, Debug, Debug
 	WinGet, winid, ID, ahk_class %wintitle%
 	EnergyTimer := Energy * 300000
+	
+	IfNotExist, %A_ScriptDir%/data/img/					;begin image calibration
+	{
+		FileCreateDir, %A_ScriptDir%/data/img
+	}
+	count:=0
+	Loop, Files, %A_ScriptDir%\data\img\*.png, R
+	{
+		if A_LoopFileName in step1.png,step2.png,step3.png,ic1.png,ic2.png,reward1.png
+		{
+			count+=1
+		}
+	}
+	if count != 6
+	{
+		Msgbox, 4, , Error: Missing image files. (Count:%count%) `n`n Run calibration?
+		IfMsgBox, no
+			exitapp
+		IfMsgBox, yes
+		{
+			Msgbox, Goto first screen of Earth Shrine and click OK.
+			ProcessSteps("Calibrate")
+			Msgbox, Step 1 Complete.`n`nHit F9 to select [Earth Shrine Exp] then F8 to start.`nWatch for popups on first run.
+		}
+	}
 	return
 }
 
@@ -92,26 +118,28 @@ SelectExp()
 		{
 			Loop, Files, %A_ScriptDir%/data/Explorations/*.ini
 			{
-				if A_Index > MaxRotate
+
+				if !LoadedExp
 				{
-					MaxRotate := %A_Index%
+					LoadedExp = %A_LoopFileName%
 				}
-				loadExp%A_Index% = %A_LoopFileName%
+				else
+				{
+					LoadedExp = %LoadedExp%,%A_LoopFileName%
+				}
+
 			}
-			LoadedExp := 1
 		}
 		if !Rotate
 		{
 			Rotate := 1
 		}
-		read := loadExp%Rotate%
+		StringSplit, Exp, LoadedExp, `,
+		read := Exp%Rotate%
+		if read
+		{
 		IniRead, newExp, %A_ScriptDir%/data/Explorations/%read%, Exploration, Title
-			if newExp = %Exploration%
-			{
-				SelectExp()
-				return
-			}
-			else
+			if newExp != %Exploration%
 			{
 				IniWrite, %newExp%, %A_ScriptDir%/data/config/config.ini, Exploration, Current
 				IniWrite, %read%, %A_ScriptDir%/data/config/config.ini, Exploration, File
@@ -120,7 +148,8 @@ SelectExp()
 				EnergyTimer := %Energy% * 300000
 			}
 		Rotate += 1
-		if Rotate > MaxRotate
+		}
+		else
 		{
 			Rotate := 1
 		}
