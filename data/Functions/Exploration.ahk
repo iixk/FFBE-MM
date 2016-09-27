@@ -7,6 +7,8 @@ EnterExploration()
 	IniRead, file, %A_ScriptDir%/data/config/config.ini, Exploration, File
 	IniRead, slot, %A_ScriptDir%/data/Explorations/%file%, Exploration, Slot
 
+;;;;;Check for popups
+
 	Check:=CheckScreen("popup", "quest")
 	if Check
 	{
@@ -21,6 +23,7 @@ EnterExploration()
 		}
 		msgbox Error: Items Full`n`nPlease press f12 and retry script.
 	}
+
 	Check:=CheckScreen("fight", "step1")
 	if Check
 	{
@@ -45,20 +48,33 @@ EnterExploration()
 			Move("M", , 6000, 1,.77)		;Default to slot 1
 		}
 	}
-	else 
+	else 		;shit we got lost
 	{
 		if PB_Token
 		{
 			PB("Stuck on EntExp1")
 		}
-		msgbox Error: Lost path entering exploration. (step 1)`n`nPlease press f12 and retry script.
+		IfNotExist, %A_ScriptDir%/data/img/popup/quest.png		;check for image file
+		{
+			Msgbox, 4, , Error: Missing image file.`n`nScript got stuck, was it a quest popup?
+			IfMsgBox, yes
+			{
+				TakeImg("popup", "quest", 409, 676, 463, 699)		;save img of menu button
+				Msgbox, Saved image file, please restart script.
+			}
+			else
+			{
+				Msgbox, Please restart script to continue.
+				;Msgbox, 4, , Error: Missing image file.`n`nScript got stuck, is your inventory full?
+			}
+		}
 	}
 		
-	Check:=CheckScreen("popup", "energy")		;Check for Full Energy
+	Check:=CheckScreen("popup", "energy")		;Check for no Energy
 	if Check
 	{
 		Move("M", , , .6, 1.1.7)				;Click no
-		debug3 = Full Energy Sleep 60s
+		debug3 = No Energy Sleep 60s
 		Sleep, 60000
 		EnterExploration()						;repeat if full
 		return

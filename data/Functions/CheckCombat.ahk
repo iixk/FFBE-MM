@@ -170,6 +170,18 @@ TakeImg(path, file, x, y, w, h)
 	}
 ;	msgbox %save% `n `n %x% - %y% - %w% - %h%
 	
+	if DebugOn
+	{	
+		IfNotExist, %A_ScriptDir%/data/img/debug/
+		{
+			FileCreateDir, %A_ScriptDir%/data/img/debug
+		}
+		debugsave=%a_scriptdir%/data/img/debug/source%file%.png
+		Gdip_SaveBitmapToFile(bmp1, debugsave)
+		debugsave=%a_scriptdir%/data/img/debug/%file%.png
+		Gdip_SaveBitmapToFile(bmp2, debugsave)
+	}
+	
 	Gdip_SaveBitmapToFile(bmp2, save)
 	Gdip_DisposeImage(bmp1)
 	Gdip_DisposeImage(bmp2)
