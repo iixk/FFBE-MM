@@ -94,7 +94,7 @@ LoadConfig()
 			count+=1
 		}
 	}
-	if count <= 6
+	if count => 6
 	{
 		Msgbox, 4, , Error: Missing image files. (Count:%count%) `n`n Run calibration?
 		IfMsgBox, no
