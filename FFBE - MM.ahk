@@ -51,7 +51,7 @@ else			;if caps on
 ;	SetFormat, float, 0
 
 	tt = 1
-	tooltip Title: %wintitle%`nMiddleX/Y: %MiddleX%/%MiddleY%`nX/Y - sX/sY: %xx%/%yy% - %sx%/%sy%`nExploration: %Exploration%`nInCombat: %inCombat%`nDebug: %debug%`nDebug2: %debug2%`nDebug3: %debug3%`nImgMethod: %ImgMethod%, 0, 0
+	tooltip Title: %wintitle%`nMiddleX/Y: %MiddleX%/%MiddleY%`nX/Y - sX/sY: %xx%/%yy% - %sx%/%sy%`nExploration: %Exploration%`nInCombat: %inCombat%`nDebug: %debug%`nDebug2: %debug2%`nDebug3: %debug3%`nImgMethod: %ImgMethod%`nImgFile: %ImgFile%, 0, 0
 
 ;Title: %wintitle%
 ;MiddleX/Y: %MiddleX%/%MiddleY%
@@ -62,6 +62,7 @@ else			;if caps on
 ;Debug2: %debug2%
 ;Debug3: %debug3%
 ;ImgMethod: %ImgMethod%
+;ImgFile: %ImgFile%
 
 	PrintScreen:: 
 	clipboard =%xx%, %yy%

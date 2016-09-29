@@ -151,12 +151,13 @@ TakeImg(path, file, x, y, w, h)
 	sy:=y/495
 	sw:=w/300
 	sh:=h/495
-;	SetFormat, float, 0
+	SetFormat, float, 0
 ;	msgbox, % sx sy sw sh
 	x:=MiddleX*sx
 	y:=MiddleY*sy
 	w:=MiddleX*sw
 	h:=MiddleY*sh
+	SetFormat, float, 0.2
 	
 	if ImgMethod
 	{
