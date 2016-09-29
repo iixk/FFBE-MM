@@ -151,7 +151,7 @@ SelectExp()
 				IniWrite, %read%, %A_ScriptDir%/data/config/config.ini, Exploration, File
 				Exploration = %newExp%
 				IniRead, Energy, %A_ScriptDir%/data/Explorations/%Exploration%.ini, Exploration, Energy
-				EnergyTimer := %Energy% * 300000
+				EnergyTimer := Energy * 300000
 			}
 		Rotate += 1
 		}
