@@ -14,6 +14,7 @@ Global PB_Token
 Global DebugOn
 Global ExpFile
 Global LoadedExp
+Global ImgMethod
 
 LoadConfig()
 {
@@ -47,6 +48,7 @@ LoadConfig()
 			IniWrite, %Down%, %A_ScriptDir%/data/config/config.ini, Window, Down
 			IniWrite, %Left%, %A_ScriptDir%/data/config/config.ini, Window, Left
 			IniWrite, %Right%, %A_ScriptDir%/data/config/config.ini, Window, Right
+			IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, ImageSearch, Method
 			IniWrite, % "", %A_ScriptDir%/data/config/config.ini, PushBullet, PB_Token
 			IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, Debug, Debug	
 		}
@@ -64,6 +66,19 @@ LoadConfig()
 	IniRead, Energy, %A_ScriptDir%/data/Explorations/%ExpFile%, Exploration, Energy
 	IniRead, PB_Token, %A_ScriptDir%/data/config/config.ini, PushBullet, API
 	IniRead, DebugOn, %A_ScriptDir%/data/config/config.ini, Debug, Debug
+	IniRead, ImgMethod, %A_ScriptDir%/data/config/config.ini, ImageSearch, Method
+	
+	
+	;Cleanup new settings on old config files.
+	if ImgMethod = ERROR
+	{
+		IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, ImageSearch, Method
+	}
+	if DebugOn = ERROR
+	{
+		IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, Debug, Debug
+	}
+	
 	WinGet, winid, ID, ahk_class %wintitle%
 	EnergyTimer := Energy * 300000
 	

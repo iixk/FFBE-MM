@@ -52,7 +52,7 @@ EnterExploration()
 	{
 		if PB_Token
 		{
-			PB("Stuck on EntExp1")
+			PB("Stuck entering exploration. (Step 1)")
 		}
 		IfNotExist, %A_ScriptDir%/data/img/popup/quest.png		;check for image file
 		{
@@ -89,7 +89,7 @@ EnterExploration()
 	{
 		if PB_Token
 		{
-			PB("Stuck on EntExp2")
+			PB("Stuck entering exploration. (Step 2)")
 		}
 		msgbox Error: Lost path entering exploration. (step 2)`n`nPlease press f12 and retry script.
 	}
@@ -103,9 +103,9 @@ EnterExploration()
 	{
 		if PB_Token
 		{
-			PB("Stuck on EntExp3")
+			PB("Stuck entering exploration. (Step 3)")
 		}
-		msgbox Error: Lost path entering exploration. (step 3)`n`nPlease press f12 and retry script.
+		msgbox Error: Lost path entering exploration. (Step 3)`n`nPlease press f12 and retry script.
 	}
 	return
 }
@@ -123,9 +123,11 @@ CompleteDungeon()
 
 CollectRewards()
 {
-	Move("R", , , ,.54)
+;	Move("R", , , ,.54)
+	Sleep, 5000
+	Move("M",,5000,1.8,.65)
 	Sleep, 15000
-	Move("M", 5, 4000, , 1.8)
+	Move("M", 4, 4000, , 1.8)
 	return
 }
 
@@ -137,7 +139,7 @@ ClearZone(z, m, fc)
 		TakeImg("combat", "inexp", 548, 933, 561, 945)		;save img of menu button
 	}
 	iniread ImgFile, %A_ScriptDir%/data/Explorations/%ExpFile%, Path, ImgFile
-	if ImgFile = ERROR								;Check if imagefile defined
+	if ImgFile = ERROR										;Check if imagefile defined
 	{
 		ImgFile=
 	}
@@ -151,10 +153,11 @@ ClearZone(z, m, fc)
 			ImgFile=
 		}
 	}
+	
 	if ImgFile
 	{
-	;Check Gil on first round
-		Move("M",,,1.83,1.9)		;click menu
+										;Check gil on first round
+		Move("M",,,1.83,1.9)			;click menu
 		gil := CheckScreen("explorations", ImgFile)
 		if gil
 		{
@@ -165,12 +168,12 @@ ClearZone(z, m, fc)
 		else
 		{
 			Move("M",,,1.83,1.9)		;click out of menu
-			FightCount := 60000
+			FightCount := 120000		;run two minutes
 		}
 	}
 	else
 	{
-		FightCount := fc * 1000
+		FightCount := fc * 1000			;run energy timer from ini
 	}
 	Timer("ZoneClearTime", FightCount)
 	while (Timer("ZoneClearTime") <> true)
@@ -262,40 +265,33 @@ return
 FightBoss()
 {
 	Sleep, 5000
-	Move("R",2,3000,,.45)
-	;Timer("FightBoss", 120000)
-	;while (Timer("FightBoss") <> true)
-	;{
-;		CheckCombat()
-		Fight := 1
-		While Fight
+	Move("M",2,3000,1.8,.65)		;Press Yes
+	Fight := 1
+	While Fight
+	{
+		CheckCombat()
+		if inCombat = 1
 		{
+			LastCombat := 1
+			DoFight()
+			Sleep, 1000
 			CheckCombat()
-			if inCombat = 1
-			{
-				LastCombat := 1
-				DoFight()
-				Sleep, 1000
-				CheckCombat()
-			}
-			else if inCombat = 2
-			{
-				LastCombat := 2
-				Sleep, 1000
-				CheckCombat()
-			}
-			else if LastCombat && inCombat = 0
-			{
-				debug3 = Boss done1
-;				Timer("FightBoss", 1)
-				LastCombat =
-				Fight =
-				break
-			}
 		}
-;	}
+		else if inCombat = 2
+		{
+			LastCombat := 2
+			Sleep, 1000
+			CheckCombat()
+		}
+		else if LastCombat && inCombat = 0
+		{
+			debug3 = Boss done1
+			LastCombat =
+			Fight =
+			break
+		}
+	}
+	Sleep, 5000
 	Move("R",2,5000)
-	Move("R")
-	Move("R",,5000,,.45)
-	return
+	Move("M",,5000,1.8,.65)		;Press Continue
 }

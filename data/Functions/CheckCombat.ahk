@@ -2,14 +2,9 @@
 
 CheckCombat()
 {
-;	img1 = %A_ScriptDir%/data/img/combat/ic1.png
-;	img2 = %A_ScriptDir%/data/img/combat/ic2.png
-;	img3 = %A_ScriptDir%/data/img/screen/inexp.png
-;	img4 = %A_ScriptDir%/data/img/fight/reward1.png
 	img1 := CheckScreen("combat", "ic1")
 	img2 := CheckScreen("combat", "ic2")
 	img3 := CheckScreen("combat", "inexp")
-;	img1 := CheckScreen("reward", "reward1")
 	if (img1)
 	{
 		inCombat := 1
@@ -107,16 +102,23 @@ ImgSrc(img)
 		;MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
 		;ExitApp
 	}
-;	WinWaitActive ahk_class %wintitle%
 ;	pToken := Gdip_Startup()						;moved up, only call once
-	WinGetPos, x, y, w, h, ahk_class %wintitle%
-	loc= %x%|%y%|%w%|%h%
-	
-;	bmpHaystack:=Gdip_BitmapFromScreen(loc)
-	WinGet, hwnd, ID, ahk_class %wintitle%
-	bmpHaystack:=Gdip_BitmapFromHWND(hwnd)
-	bmpNeedle := Gdip_CreateBitmapFromFile(img)
 
+	if ImgMethod
+	{
+		MSGBOX %ImgMethod%
+		WinWaitActive ahk_class %wintitle%
+		WinGetPos, x, y, w, h, ahk_class %wintitle%
+		loc= %x%|%y%|%w%|%h%
+		bmpHaystack:=Gdip_BitmapFromScreen(loc)
+	}
+	else
+	{
+		WinGet, hwnd, ID, ahk_class %wintitle%
+		bmpHaystack:=Gdip_BitmapFromHWND(hwnd)
+	}
+
+	bmpNeedle := Gdip_CreateBitmapFromFile(img)
 	RET := Gdip_ImageSearch(bmpHaystack,bmpNeedle,LIST,0,0,0,0,0,0xFFFFFF,1,0)
 	
 ;	file=%a_scriptdir%\test.png
@@ -129,7 +131,6 @@ ImgSrc(img)
 ;	Gdip_Shutdown(pToken)							;moved to main ahk
 	
 ;	MsgBox, % img "`n`nReturned: " RET "`n`n" LIST	;test only
-;	WinSet,Redraw,, Ahk_id %winid%
 	if RET>0
 	{
 		return %RET%
@@ -146,21 +147,33 @@ TakeImg(path, file, x, y, w, h)
 	{
 		pToken := Gdip_Startup()
 	}
-	SetFormat, float, 0.2
+;	SetFormat, float, 0.2
 	sx:=x/300
 	sy:=y/495
 	sw:=w/300
 	sh:=h/495
-	SetFormat, float, 0
+;	SetFormat, float, 0
 ;	msgbox, % sx sy sw sh
 	x:=MiddleX*sx
 	y:=MiddleY*sy
 	w:=MiddleX*sw
 	h:=MiddleY*sh
-	WinGet, hwnd, ID, ahk_class %wintitle%			;get window id
-	bmp1:=Gdip_BitmapFromHWND(hwnd)
-	Gdip_GetDimensions(pBitmap, w, h)
-;	bmp2:=Gdip_CropImage(bmp1, 242, 223, 346, 240)
+	
+	if ImgMethod
+	{
+		WinWaitActive ahk_class %wintitle%
+		WinGetPos, x, y, w, h, ahk_class %wintitle%
+		loc= %x%|%y%|%w%|%h%
+		bmp1:=Gdip_BitmapFromScreen(loc)
+	}
+	else
+	{
+		WinGet, hwnd, ID, ahk_class %wintitle%
+		bmp1:=Gdip_BitmapFromHWND(hwnd)
+	}
+	
+;	Gdip_GetDimensions(pBitmap, w, h)
+
 	bmp2:=Gdip_CropImage(bmp1, x, y, w, h)
 	
 	save=%a_scriptdir%/data/img/%path%/%file%.png

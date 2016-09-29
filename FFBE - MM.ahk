@@ -8,7 +8,7 @@ SendMode Input
 SetWorkingDir %A_ScriptDir% 
 CoordMode, Mouse, Relative
 SetControlDelay -1
-SetFormat, float, 0
+SetFormat, float, 0.2
 OnExit, EXIT_LABEL
 
 Global debug
@@ -39,19 +39,33 @@ if !GetKeyState("capslock","T")
 	    	tooltip
 	}
 }
-else
-{ ; if on
+else			;if caps on
+{
 
- CoordMode, ToolTip, Screen 
- CoordMode, Mouse, Relative
- MouseGetPos xx, yy 
- spx := xx / MiddleX
- spy := yy / MiddleY
- tt = 1
- tooltip %MiddleX% %MiddleY% %xx% %yy% -- %spx% - %spy%`nIn Combat: %inCombat%`nFightCount: %FightCount% - LastCombat: %LastCombat%`nDebug: %debug%`nDebug2: %debug2%`nDebug3: %debug3%, 0, 0 
- PrintScreen:: 
- clipboard =%xx%, %yy%
- return
+	CoordMode, ToolTip, Screen 
+	CoordMode, Mouse, Relative
+	MouseGetPos xx, yy 
+;	SetFormat, float, 0.2
+	sx := xx/MiddleX
+	sy := yy/MiddleY
+;	SetFormat, float, 0
+
+	tt = 1
+	tooltip Title: %wintitle%`nMiddleX/Y: %MiddleX%/%MiddleY%`nX/Y - sX/sY: %xx%/%yy% - %sx%/%sy%`nExploration: %Exploration%`nInCombat: %inCombat%`nDebug: %debug%`nDebug2: %debug2%`nDebug3: %debug3%`nImgMethod: %ImgMethod%, 0, 0
+
+;Title: %wintitle%
+;MiddleX/Y: %MiddleX%/%MiddleY%
+;X/Y - sX/sY: %xx%/%yy% - %sx%/%sy%
+;Exploration: %Exploration%
+;InCombat: %inCombat%
+;Debug: %debug%
+;Debug2: %debug2%
+;Debug3: %debug3%
+;ImgMethod: %ImgMethod%
+
+	PrintScreen:: 
+	clipboard =%xx%, %yy%
+	return
 }
 return
 
@@ -72,7 +86,6 @@ if DebugOn
 	f4::
 	{
 		test:=CheckScreen("fight", "reward1")
-		;test:=CheckScreen2()
 		msgbox %test%
 	}
 }
