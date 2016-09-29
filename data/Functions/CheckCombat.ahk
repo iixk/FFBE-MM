@@ -106,7 +106,6 @@ ImgSrc(img)
 
 	if ImgMethod
 	{
-		MSGBOX %ImgMethod%
 		WinWaitActive ahk_class %wintitle%
 		WinGetPos, x, y, w, h, ahk_class %wintitle%
 		loc= %x%|%y%|%w%|%h%
