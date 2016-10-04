@@ -162,8 +162,8 @@ TakeImg(path, file, x, y, w, h)
 	if ImgMethod
 	{
 		WinWaitActive ahk_class %wintitle%
-		WinGetPos, x, y, w, h, ahk_class %wintitle%
-		loc= %x%|%y%|%w%|%h%
+		WinGetPos, ssx, ssy, ssw, ssh, ahk_class %wintitle%
+		loc= %ssx%|%ssy%|%ssw%|%ssh%
 		bmp1:=Gdip_BitmapFromScreen(loc)
 	}
 	else
