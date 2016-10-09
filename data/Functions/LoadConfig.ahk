@@ -46,10 +46,22 @@ LoadConfig()
 			IniWrite, %Down%, %A_ScriptDir%/data/config/config.ini, Window, Down
 			IniWrite, %Left%, %A_ScriptDir%/data/config/config.ini, Window, Left
 			IniWrite, %Right%, %A_ScriptDir%/data/config/config.ini, Window, Right
-			IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, ImageSearch, Method
 			IniWrite, 1, %A_ScriptDir%/data/config/config.ini, ImageSearch, GilSearch
 			IniWrite, % "", %A_ScriptDir%/data/config/config.ini, PushBullet, PB_Token
 			IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, Debug, Debug	
+			
+			WinGetTitle, title, ahk_class %wintitle%
+			IfInString, title, MEmu
+			{
+				Msgbox, You're currently using MEmu, setting Alt ImgSearch and FightMode to on.
+				IniWrite, 1, %A_ScriptDir%/data/config/config.ini, ImageSearch, Method
+				IniWrite, 1, %A_ScriptDir%/data/config/config.ini, FightMode, Method
+			}
+			else
+			{
+				IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, ImageSearch, Method
+				IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, FightMode, Method
+			}
 		}
 	}
 	IniRead, wintitle, %A_ScriptDir%/data/config/config.ini, Window, WinTitle
