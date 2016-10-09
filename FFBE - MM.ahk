@@ -22,8 +22,11 @@ Global debug3
 #Include %A_ScriptDir%/data/functions/GDIP_all.ahk
 #Include %A_ScriptDir%/data/functions/Gdip_ImageSearch.ahk
 #Include %A_ScriptDir%/data/functions/PushBullet.ahk
+#Include %A_ScriptDir%/data/functions/DoFight.ahk
+#Include %A_ScriptDir%/data/functions/GUI.ahk
 
 LoadConfig()
+LoadGUI()
 
 if DebugOn
 {
@@ -31,6 +34,7 @@ if DebugOn
 	return
 }
 
+Return
 start1:
 if !GetKeyState("capslock","T")
 {
@@ -51,18 +55,22 @@ else			;if caps on
 ;	SetFormat, float, 0
 
 	tt = 1
-	tooltip Title: %wintitle%`nMiddleX/Y: %MiddleX%/%MiddleY%`nX/Y - sX/sY: %xx%/%yy% - %sx%/%sy%`nExploration: %Exploration%`nInCombat: %inCombat%`nDebug: %debug%`nDebug2: %debug2%`nDebug3: %debug3%`nImgMethod: %ImgMethod%`nImgFile: %ImgFile%, 0, 0
+	tooltip Title: %wintitle%`nMiddleX/Y: %MiddleX%/%MiddleY%`nX/Y - sX/sY: %xx%/%yy% - %sx%/%sy%`nExploration: %Exploration%`nEnergyTimer: %EnergyTimer%`nInCombat: %inCombat%`nFightPath: %FightPath%`nFightRound: %FightRound%`nDebug: %debug%`nDebug2: %debug2%`nDebug3: %debug3%`nImgMethod: %ImgMethod%`nImgFile: %ImgFile%`nFightMode: %FightMode%, 0, 0
 
 ;Title: %wintitle%
 ;MiddleX/Y: %MiddleX%/%MiddleY%
 ;X/Y - sX/sY: %xx%/%yy% - %sx%/%sy%
 ;Exploration: %Exploration%
+;EnergyTimer: %EnergyTimer%
 ;InCombat: %inCombat%
+;FightPath: %FightPath%
+;FightRound: %FightRound%
 ;Debug: %debug%
 ;Debug2: %debug2%
 ;Debug3: %debug3%
 ;ImgMethod: %ImgMethod%
 ;ImgFile: %ImgFile%
+;FightMode: %FightMode%
 
 	PrintScreen:: 
 	clipboard =%xx%, %yy%
@@ -86,8 +94,18 @@ if DebugOn
 	f3::ClearZone(2, "LR", 900)
 	f4::
 	{
-		test:=CheckScreen("fight", "reward1")
-		msgbox %test%
+		x1 := MiddleX * 1.23
+		y1 := MiddleY * 1.75
+		x2 := MiddleX * 1.63
+		y2 := MiddleY * 1.75
+		SendEvent {Click, %x1%, %y1%, down}{Click, %x2%, %y2%, up}
+		;MouseClickDrag, L, x1, y1, x2, y2, 75
+		return
+	}
+	f5::
+	{
+		run https://www.paypal.com/xclick/business=xkramx`%40gmail.com&item_name=FFBE Donation&no_note=1&tax=0&currency_code=USD
+		return
 	}
 }
 
@@ -101,21 +119,19 @@ f12::
 }
 F8::
 {
-	while (true)
-	{
-		if Timer("Energy")
-		{
-			;Set "3900000" to how long you want it to delay in milliseconds
-			Timer("Energy", EnergyTimer)
-			Sleep, 3000
-			EnterExploration()
-			CompleteDungeon()
-		}
-
-	}
-
+	StartExp()
+;	while (true)
+;	{
+;		if Timer("Energy")
+;		{
+;			;Set "3900000" to how long you want it to delay in milliseconds
+;			Timer("Energy", EnergyTimer)
+;			Sleep, 3000
+;			EnterExploration()
+;			CompleteDungeon()
+;		}
+;	}
 }
-F9::SelectExp()	
 
 Timer(Timer_Name := "", Timer_Opt := "D")
 {

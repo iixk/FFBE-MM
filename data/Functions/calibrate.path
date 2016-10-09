@@ -9,4 +9,8 @@ DL
 TakeImg,combat,ic2,210,941,223,955,Wait for results screen and hit OK.
 Sleep,45000
 TakeImg,fight,reward1,272,881,328,903
-M,5,4000,,1.8
+M,,4000,,1.8
+TakeImg,fight,reward2,445,205,461,221
+M,,4000,,1.8
+TakeImg,fight,reward4,221,165,370,182
+M,,4000,,1.8

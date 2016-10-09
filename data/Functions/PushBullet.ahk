@@ -2,7 +2,10 @@
 
 PB(msg)
 {
-	PB_PushNote(PB_Token, PB_Title, msg)
+	if PB_Token
+	{
+		PB_PushNote(PB_Token, PB_Title, msg)
+	}
 }
 
 PB_PushNote(PB_Token, PB_Title, PB_Message)

@@ -15,6 +15,12 @@ Global DebugOn
 Global ExpFile
 Global LoadedExp
 Global ImgMethod
+Global ImgFileOn
+Global Energy
+Global FightMode
+Global SpendLapis
+Global ImagePath
+Global FightPath
 
 LoadConfig()
 {
@@ -30,15 +36,7 @@ LoadConfig()
 			Sleep, 1000
 			WinActivate, ahk_class Qt5QWindowIcon
 			GetWinInfo()
-;not working			if MiddleX != 300 || MiddleY != 495
-;			{
-;				Msgbox, 4, , Window size different.`n`nResize Window?
-;				IfMsgBox, yes
-;				{
-;					WinMove, ahk_class %wintitle%,,,, 600, 990
-;					GetWinInfo()
-;				}
-;			}
+
 			IniWrite, NA, %A_ScriptDir%/data/config/config.ini, Exploration, Current
 			IniWrite, %wintitle%, %A_ScriptDir%/data/config/config.ini, Window, WinTitle
 			IniWrite, %wintext%, %A_ScriptDir%/data/config/config.ini, Window, WinText
@@ -49,6 +47,7 @@ LoadConfig()
 			IniWrite, %Left%, %A_ScriptDir%/data/config/config.ini, Window, Left
 			IniWrite, %Right%, %A_ScriptDir%/data/config/config.ini, Window, Right
 			IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, ImageSearch, Method
+			IniWrite, 1, %A_ScriptDir%/data/config/config.ini, ImageSearch, GilSearch
 			IniWrite, % "", %A_ScriptDir%/data/config/config.ini, PushBullet, PB_Token
 			IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, Debug, Debug	
 		}
@@ -67,27 +66,56 @@ LoadConfig()
 	IniRead, PB_Token, %A_ScriptDir%/data/config/config.ini, PushBullet, API
 	IniRead, DebugOn, %A_ScriptDir%/data/config/config.ini, Debug, Debug
 	IniRead, ImgMethod, %A_ScriptDir%/data/config/config.ini, ImageSearch, Method
-	
+	IniRead, ImgFileOn, %A_ScriptDir%/data/config/config.ini, ImageSearch, GilSearch
+	IniRead, FightMode, %A_ScriptDir%/data/config/config.ini, FightMode, Method
+	IniRead, SpendLapis, %A_ScriptDir%/data/config/config.ini, Options, SpendLapis
 	
 	;Cleanup new settings on old config files.
+	if SpendLapis = ERROR
+	{
+		IniWrite, % "", %A_ScriptDir%/data/config/config.ini, Options, SpendLapis
+		SpendLapis =
+	}
+	if FightMode = ERROR
+	{
+		IniWrite, % "", %A_ScriptDir%/data/config/config.ini, FightMode, Method
+		FightMode =
+	}
+	if ImgFileOn = ERROR
+	{
+		IniWrite, 1, %A_ScriptDir%/data/config/config.ini, ImageSearch, GilSearch
+		GilSearch := 1
+	}
 	if ImgMethod = ERROR
 	{
 		IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, ImageSearch, Method
+		ImageSearch =
 	}
 	if DebugOn = ERROR
 	{
 		IniWrite, % "" , %A_ScriptDir%/data/config/config.ini, Debug, Debug
+		DebugOn =
+	}
+	
+	;Set ImagePath for Alt. ImgSearch
+	If ImgMethod
+	{
+		ImagePath = data/altimg
+	}
+	else
+	{
+		ImagePath = data/img
 	}
 	
 	WinGet, winid, ID, ahk_class %wintitle%
 	EnergyTimer := Energy * 300000
 	
-	IfNotExist, %A_ScriptDir%/data/img/					;begin image calibration
+	IfNotExist, %A_ScriptDir%/%ImagePath%/					;begin image calibration
 	{
-		FileCreateDir, %A_ScriptDir%/data/img
+		FileCreateDir, %A_ScriptDir%/%ImagePath%
 	}
 	count:=0
-	Loop, Files, %A_ScriptDir%\data\img\*.png, R
+	Loop, Files, %A_ScriptDir%\%ImagePath%\*.png, R
 	{
 		if A_LoopFileName in step1.png,step2.png,step3.png,ic1.png,ic2.png,reward1.png
 		{
@@ -104,65 +132,36 @@ LoadConfig()
 		{
 			Msgbox, Goto first screen of Earth Shrine and click OK.
 			ProcessSteps("Calibrate")
-			Msgbox, Step 1 Complete.`n`nHit F9 to select [Earth Shrine Exp] then F8 to start.`nWatch for popups on first run.
+			Msgbox, Step 1 Complete.`n`nSelect [Earth Shrine Exp] then start.`nWatch for popups on first run.
+		}
+	}
+	
+	;Check Window size to config settings.
+	WinGetPos,,, CurW, CurH, ahk_class %wintitle%
+	if (CurW != (MiddleX*2)) || (CurH != (MiddleY*2))
+	{
+		MiddleX := CurW/2
+		MiddleY := CurH/2
+		Msgbox, 4, , Warning: Current window size does not match config settings.`nIf you experience issues please delete config and image folders and recalibrate.`n`nDo you want to save the new window size to settings?
+		IfMsgBox, no
+			return
+		IfMsgBox, yes
+		{
+			IniWrite, %MiddleX%, %A_ScriptDir%/data/config/config.ini, Window, MiddleX
+			IniWrite, %MiddleY%, %A_ScriptDir%/data/config/config.ini, Window, MiddleY
 		}
 	}
 	return
 }
 
-SelectExp()
+LoadHotKeys()
 {
-	tooltip Exploration Path Selected: [%Exploration%]`nPress [F9] to change.,0,0
-	keywait, F9, D T3
-	if errorlevel
+	RegRead, AppLocal, HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders, Local AppData
+	file = %A_ScriptDir%\data\functions\hotkey.path
+	path = %AppLocal%\nox\com.square_enix.android_googleplay.FFBEWW.import_900x1440.xml
+	IfNotExist, %path%
 	{
-		tooltip
-		return
-	}
-	else
-	{
-		if !LoadedExp
-		{
-			Loop, Files, %A_ScriptDir%/data/Explorations/*.ini
-			{
-
-				if !LoadedExp
-				{
-					LoadedExp = %A_LoopFileName%
-				}
-				else
-				{
-					LoadedExp = %LoadedExp%,%A_LoopFileName%
-				}
-
-			}
-		}
-		if !Rotate
-		{
-			Rotate := 1
-		}
-		StringSplit, Exp, LoadedExp, `,
-		read := Exp%Rotate%
-		if read
-		{
-		IniRead, newExp, %A_ScriptDir%/data/Explorations/%read%, Exploration, Title
-			if newExp != %Exploration%
-			{
-				IniWrite, %newExp%, %A_ScriptDir%/data/config/config.ini, Exploration, Current
-				IniWrite, %read%, %A_ScriptDir%/data/config/config.ini, Exploration, File
-				Exploration = %newExp%
-				IniRead, Energy, %A_ScriptDir%/data/Explorations/%Exploration%.ini, Exploration, Energy
-				EnergyTimer := Energy * 300000
-			}
-		Rotate += 1
-		}
-		else
-		{
-			Rotate := 1
-		}
-		Sleep, 500
-		SelectExp()
-		return
+		FileCopy, %file%, path
 	}
 }
 

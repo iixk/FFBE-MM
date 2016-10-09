@@ -19,8 +19,7 @@ Macro will pause if not active.
 
 -Run FFBE-MM.ahk as admin
 -Navigate to exploration selection screen.
--Press F9 to select exploration path.
--Press F8 to begin.
+
 
 ##########################
 Troubleshooting

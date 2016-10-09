@@ -1,6 +1,43 @@
 Global FightCount
 Global inCombat
 Global LastCombat
+Global ResetExp
+Global FightRound
+
+StartExp()
+{
+	ResetExp:=
+	while (!ResetExp)
+	{
+		if Timer("Energy")
+		{
+			Timer("Energy", EnergyTimer)
+			Sleep, 3000
+			EnterExploration()
+			CompleteDungeon()
+		}
+	}
+	return
+}
+
+RestartExp()
+{
+;	While (true)
+;	{
+		if !Timer("Energy")
+		{
+			ResetExp:=1				;if timer still going reset startexp
+;			break
+		}
+		else
+		{
+			ResetExp:=1
+			StartExp()				;Wait for timer and rerun
+;			break
+		}
+;	}
+	return
+}
 
 EnterExploration()
 {
@@ -17,14 +54,28 @@ EnterExploration()
 	Check:=CheckScreen("popup", "items")
 	if Check
 	{
-		if PB_Token
-		{
-			PB("Items Full")
-		}
+		PB("Items Full")
 		msgbox Error: Items Full`n`nPlease press f12 and retry script.
 	}
-
-	Check:=CheckScreen("fight", "step1")
+	Vortex:=
+	IniRead, Vortex, %A_ScriptDir%/data/Explorations/%file%, Exploration, Vortex
+	if Vortex							;need different img for vortex step1
+	{
+		Debug = Entering Vortex
+		if Vortex = ERROR
+		{
+			IniWrite, % "", %A_ScriptDir%/data/Explorations/%file%, Exploration, Vortex
+			Check:=CheckScreen("fight", "step1")
+		}
+		else
+		{
+			Check:=CheckScreen("fight", "stepv1", 1)			;Step1 Vortex image, make new if needed
+		}
+	}
+	else
+	{
+		Check:=CheckScreen("fight", "step1")
+	}
 	if Check
 	{
 		if slot = 1
@@ -43,6 +94,22 @@ EnterExploration()
 		{
 			Move("M", , 6000, , 1.71)
 		}
+		else if slot = 5
+		{
+			Move("M", , 6000, , 1.91)
+		}
+		else if slot = 6
+		{
+			Move("M", , 6000, 1.97, 1.44)
+		}
+		else if slot = 7
+		{
+			Move("M", , 6000, 1.97, 1.66)
+		}
+		else if slot = 8
+		{
+			Move("M", , 6000, 1.97, 1.97)
+		}
 		else
 		{
 			Move("M", , 6000, 1,.77)		;Default to slot 1
@@ -50,11 +117,8 @@ EnterExploration()
 	}
 	else 		;shit we got lost
 	{
-		if PB_Token
-		{
-			PB("Stuck entering exploration. (Step 1)")
-		}
-		IfNotExist, %A_ScriptDir%/data/img/popup/quest.png		;check for image file
+		PB("Stuck entering exploration. (Step 1)")
+		IfNotExist, %A_ScriptDir%/%ImagePath%/popup/quest.png		;check for image file
 		{
 			Msgbox, 4, , Error: Missing image file.`n`nScript got stuck, was it a quest popup?
 			IfMsgBox, yes
@@ -70,27 +134,32 @@ EnterExploration()
 		}
 	}
 		
-	Check:=CheckScreen("popup", "energy")		;Check for no Energy
+	Check:=CheckScreen("popup", "energy")			;Check for no Energy
 	if Check
 	{
-		Move("M", , , .6, 1.1.7)				;Click no
-		debug3 = No Energy Sleep 60s
-		Sleep, 60000
-		EnterExploration()						;repeat if full
-		return
+		if SpendLapis
+		{
+			msgbox Not Finished yet. (SpendLapis)
+			return
+		}
+		else
+		{
+			Move("M", , , .6, 1.1.7)				;Click no
+			debug3 = No Energy Sleep 60s
+			Sleep, 60000
+			EnterExploration()						;repeat if full
+			return
+		}
 	}
 	
 	Check:=CheckScreen("fight", "step2")
 	if Check
 	{
-			Move("M", , 6000, 1,.77)			;Pick friend
+			Move("M", , 6000, 1,.77)				;Pick friend
 	}
 	else
 	{
-		if PB_Token
-		{
-			PB("Stuck entering exploration. (Step 2)")
-		}
+		PB("Stuck entering exploration. (Step 2)")
 		msgbox Error: Lost path entering exploration. (step 2)`n`nPlease press f12 and retry script.
 	}
 	
@@ -101,10 +170,7 @@ EnterExploration()
 	}
 	else
 	{
-		if PB_Token
-		{
-			PB("Stuck entering exploration. (Step 3)")
-		}
+		PB("Stuck entering exploration. (Step 3)")
 		msgbox Error: Lost path entering exploration. (Step 3)`n`nPlease press f12 and retry script.
 	}
 	return
@@ -117,36 +183,83 @@ CompleteDungeon()
 	debug3 = %do%
 	ProcessSteps(do)
 	Sleep, 5000
+	Move("M",,5000,1.8,.65)			;Click yes to leave
 	CollectRewards()
 	return
 }
 
 CollectRewards()
 {
-;	Move("R", , , ,.54)
-	Sleep, 5000
-	Move("M",,5000,1.8,.65)
-	Sleep, 15000
-	Move("M", 4, 4000, , 1.8)
+;	Sleep, 15000
+	step:=1
+	count:=0
+	While !collect
+	{
+		If step = 1
+		{
+			debug = Collect Rewards - Step1 (%count%)
+			reward:=CheckScreen("fight", "reward1")
+			if count > 25
+			{
+				levelup:=CheckScreen("popup", "levelup", 1)
+				if levelup
+				{
+					Move("M", 2)			;click through popup
+				}
+				else
+				{
+					Debug3 = Stuck collecting rewards.
+					PB("Stuck collecting rewards. Attempting unstuck.")
+					UnStuck()
+					return
+				}
+			}
+		}
+		If step = 2
+		{
+			debug = Collect Rewards - Step2 (%count%)
+			reward:=CheckScreen("fight", "reward2", 1)
+		}
+		If step = 3
+		{
+			debug = Collect Rewards - Step3 (%count%)
+			reward:=CheckScreen("fight", "reward4", 1)
+		}
+		if step = 4
+		{
+			reward:=
+			step:=
+			collect:=1
+		}
+		if reward
+		{
+			sleep, 1000
+			Move("M", , 4000, , 1.8)
+			step+=1
+		}
+;	Move("M", 4, 4000, , 1.8)
+	}
 	return
 }
 
 ClearZone(z, m, fc)
 {
-	IfNotExist, %A_ScriptDir%/data/img/combat/inexp.png		;check for image file
+	FightRound := 1
+	IfNotExist, %A_ScriptDir%/%ImagePath%/combat/inexp.png		;check for image file
 	{
 		Msgbox, Error: Missing image file.`n`nEnsure you are in a exploration and press OK.
 		TakeImg("combat", "inexp", 548, 933, 561, 945)		;save img of menu button
 	}
+	ImgFile=
 	iniread ImgFile, %A_ScriptDir%/data/Explorations/%ExpFile%, Path, ImgFile
 	if ImgFile = ERROR										;Check if imagefile defined
 	{
 		ImgFile=
 	}
-	else
+	else if ImgFile && ImgFileOn
 	{
 		ImgFile = %ImgFile%%z%
-		IfNotExist, %A_ScriptDir%/data/img/explorations/%ImgFile%.png		;check if defined file exists
+		IfNotExist, %A_ScriptDir%/%ImagePath%/explorations/%ImgFile%.png		;check if defined file exists
 		{
 			FightCount := fc * 1000
 			NewImgFile = %ImgFile%			;trigger new image file
@@ -154,7 +267,7 @@ ClearZone(z, m, fc)
 		}
 	}
 	
-	if ImgFile
+	if ImgFile && ImgFileOn
 	{
 										;Check gil on first round
 		Move("M",,,1.83,1.9)			;click menu
@@ -175,6 +288,23 @@ ClearZone(z, m, fc)
 	{
 		FightCount := fc * 1000			;run energy timer from ini
 	}
+	
+	iniread FightPath, %A_ScriptDir%/data/Explorations/%ExpFile%, Path, FightPath
+	
+	if ( FightPath = ERROR ) || !FightPath							;Check if imagefile defined
+	{
+		FightPath = AUTO
+	}
+	else
+	{
+		FightPath = %A_ScriptDir%/data/FightPaths/%FightPath%
+		IfNotExist, %FightPath%
+		{
+			PB("Missing Fight Path, Defaulting to AUTO.")
+			FightPath = AUTO								;defualt to auto if missing fight path
+		}
+	}
+	
 	Timer("ZoneClearTime", FightCount)
 	while (Timer("ZoneClearTime") <> true)
 	{
@@ -186,8 +316,10 @@ ClearZone(z, m, fc)
 			{
 				debug3 = incombat ok
 				LastCombat := 1
-				DoFight()
 				Sleep, 1000
+				DoFight(FightPath)
+				FightRound+=1
+				;Sleep, 1000
 				CheckCombat()
 			}
 			else if inCombat = 2
@@ -198,7 +330,7 @@ ClearZone(z, m, fc)
 				CheckCombat()
 			}
 		}
-		if ImgFile && LastCombat && inCombat = 0
+		if ImgFileOn && ImgFile && LastCombat && inCombat = 0 && m != Dungeon
 		{
 			Move("M",,2000)
 			Move("M",,,1.83,1.9)		;click menu
@@ -256,10 +388,20 @@ ClearZone(z, m, fc)
 	return
 }
 
-DoFight()
+SpendEnergy()
 {
-Move("LD") ;click auto
-return
+	if SpendLapis
+	{
+		
+	}
+	else
+	{
+		Move("M", , , .6, 1.1.7)				;Click no
+		debug3 = No Energy Sleep 60s
+		Sleep, 60000
+		EnterExploration()						;repeat if full
+		return
+	}
 }
 
 FightBoss()
@@ -273,7 +415,7 @@ FightBoss()
 		if inCombat = 1
 		{
 			LastCombat := 1
-			DoFight()
+			DoFight("Auto")				;Need boss path
 			Sleep, 1000
 			CheckCombat()
 		}
