@@ -145,10 +145,8 @@ Move(d, r:=1, wait:=2000, sx:=1, sy:=1)
 
 	Loop %r%
 	{
-;		SetFormat, float, 0.2
 		fx := x * sx
 		fy := y * sy
-;		SetFormat, float, 0
 		debug2 = received move - %fx% - %fy% - %wintitle%
 		ControlClick, x%fX% y%fy%, ahk_class %wintitle%
 		sleep, %wait%

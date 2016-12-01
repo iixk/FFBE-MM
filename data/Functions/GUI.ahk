@@ -85,12 +85,11 @@ LoadGUI()
 	Gui Add, CheckBox, x39 y170 w308 h23 vImgMethod Checked%ImgMethod%, Alt. Image Search Method (Requires active window)
 	Gui Add, CheckBox, x39 y137 w307 h23 vFightMode Checked%FightMode%, Alt. Fight Mode (Requires active window)
 	Gui Add, CheckBox, x39 y203 w304 h23 vImgFileOn Checked%ImgFileOn%, Check Gil on clear zone
-;	Gui Add, CheckBox, x39 y269 w171 h23 vSpendLapis Checked%SpendLapis%, Spend lapis to refresh energy
-;	Gui Add, Text, x39 y302 w120 h23 +0x200, Max lapis to spend:
+	Gui Add, CheckBox, x39 y269 w171 h23 vSpendLapis Checked%SpendLapis%, Spend lapis to refresh energy
+	Gui Add, Text, x39 y302 w120 h23 +0x200, Max lapis to spend:
 	Gui Font
 	Gui Add, Edit, x135 y104 w190 h21 vPB_Token, %PB_Token%				;pbedit
-;	Gui Add, Edit, x195 y304 w130 h21, NOT ADDED YET				;lapis
-	
+	Gui Add, Edit, x195 y304 w130 h21 vLapis, %Lapis%				;lapis
 	Return
 	
 	SaveOpt:
@@ -103,6 +102,8 @@ LoadGUI()
 		IniWrite, %ImgFileOn%, %A_ScriptDir%/data/config/config.ini, ImageSearch, GilSearch
 		IniWrite, %SpendLapis%, %A_ScriptDir%/data/config/config.ini, Options, SpendLapis
 		IniWrite, %PB_Token%, %A_ScriptDir%/data/config/config.ini, PushBullet, API
+		IniWrite, %SpendLapis%, %A_ScriptDir%/data/config/config.ini, Options, SpendLapis
+		IniWrite, %Lapis%, %A_ScriptDir%/data/config/config.ini, Options, LapisToSpend
 		reload
 	}
 	
@@ -146,7 +147,14 @@ LoadGUI()
 	{
 		Gui, Main:Default
 		Gui, Submit, NoHide
-		EnergyTimer := Energy * 300000
+		if Energy = 0
+		{
+			EnergyTimer := 10000
+		}
+		else
+		{
+			EnergyTimer := Energy * 300000
+		}
 		if ImgMethod || FightMode
 		{
 			msgbox Caution: Alt image search or alt fight mode enabled.`nKeep FFBE window active and visible or script will break.

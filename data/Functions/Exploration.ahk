@@ -45,7 +45,7 @@ EnterExploration()
 	IniRead, slot, %A_ScriptDir%/data/Explorations/%file%, Exploration, Slot
 
 ;;;;;Check for popups
-
+;	Check:=CheckScreen("popup", "frequest")
 	Check:=CheckScreen("popup", "quest")
 	if Check
 	{
@@ -78,45 +78,18 @@ EnterExploration()
 	}
 	if Check
 	{
-		if slot = 1
-		{
-			Move("M", , 6000, 1,.77)
-		}
-		else if slot = 2
-		{
-			Move("M", , 6000)
-		}
-		else if slot = 3
-		{
-			Move("M", , 6000, , 1.41)
-		}
-		else if slot = 4
-		{
-			Move("M", , 6000, , 1.71)
-		}
-		else if slot = 5
-		{
-			Move("M", , 6000, , 1.91)
-		}
-		else if slot = 6
-		{
-			Move("M", , 6000, 1.97, 1.44)
-		}
-		else if slot = 7
-		{
-			Move("M", , 6000, 1.97, 1.66)
-		}
-		else if slot = 8
-		{
-			Move("M", , 6000, 1.97, 1.97)
-		}
-		else
-		{
-			Move("M", , 6000, 1,.77)		;Default to slot 1
-		}
+		ClickSlot(slot)
 	}
 	else 		;shit we got lost
 	{
+		Check:=CheckScreen("popup", "frequest", 1)
+		if Check
+		{
+			Debug3 = Friend Request popup
+			Move("M", , , .5, 1.5)							;click don't request new friend
+			EnterExploration()
+			return
+		}
 		PB("Stuck entering exploration. (Step 1)")
 		IfNotExist, %A_ScriptDir%/%ImagePath%/popup/quest.png		;check for image file
 		{
@@ -137,20 +110,25 @@ EnterExploration()
 	Check:=CheckScreen("popup", "energy")			;Check for no Energy
 	if Check
 	{
-		if SpendLapis
+		if SpendLapis && Lapis > 0
 		{
-			msgbox Not Finished yet. (SpendLapis)
-			return
+			PB("Refreshed energy.")
+			Move("M", , , 1.4, 1.15)				;Click yes
+			Lapis-=100
+			IniWrite, %Lapis%, %A_ScriptDir%/data/config/config.ini, Options, LapisToSpend
 		}
 		else
 		{
-			Move("M", , , .6, 1.1.7)				;Click no
+			Move("M", , 3000, .6, 1.17)				;Click no
+			Move("M", , , 1.97, .58)				;Move back to slot1
 			debug3 = No Energy Sleep 60s
 			Sleep, 60000
 			EnterExploration()						;repeat if full
 			return
 		}
 	}
+	
+	Move("M", , 5000, 1, 1.8)	;CLICK NEXT
 	
 	Check:=CheckScreen("fight", "step2")
 	if Check
@@ -160,7 +138,9 @@ EnterExploration()
 	else
 	{
 		PB("Stuck entering exploration. (Step 2)")
-		msgbox Error: Lost path entering exploration. (step 2)`n`nPlease press f12 and retry script.
+		UnStuck()
+		return
+;		msgbox Error: Lost path entering exploration. (step 2)`n`nPlease press f12 and retry script.
 	}
 	
 	Check:=CheckScreen("fight", "step3")
@@ -174,6 +154,46 @@ EnterExploration()
 		msgbox Error: Lost path entering exploration. (Step 3)`n`nPlease press f12 and retry script.
 	}
 	return
+}
+
+ClickSlot(slot)
+{
+	if slot = 1
+	{
+		Move("M", , 6000, 1,.77)
+	}
+	else if slot = 2
+	{
+		Move("M", , 6000)
+	}
+	else if slot = 3
+	{
+		Move("M", , 6000, , 1.41)
+	}
+	else if slot = 4
+	{
+		Move("M", , 6000, , 1.71)
+	}
+	else if slot = 5
+	{
+		Move("M", , 6000, , 1.91)
+	}
+	else if slot = 6
+	{
+		Move("M", , 6000, 1.97, 1.44)
+	}
+	else if slot = 7
+	{
+		Move("M", , 6000, 1.97, 1.66)
+	}
+	else if slot = 8
+	{
+		Move("M", , 6000, 1.97, 1.97)
+	}
+	else
+	{
+		Move("M", , 6000, 1,.77)		;Default to slot 1
+	}
 }
 
 CompleteDungeon()
@@ -190,40 +210,73 @@ CompleteDungeon()
 
 CollectRewards()
 {
-;	Sleep, 15000
 	step:=1
 	count:=0
 	While !collect
 	{
 		If step = 1
 		{
-			debug = Collect Rewards - Step1 (%count%)
+			debug3 = Collect Rewards - Step1 (%count%)
 			reward:=CheckScreen("fight", "reward1")
+			if count > 10
+			{
+;				levelup:=CheckScreen("popup", "levelup", 1)
+;				if levelup
+;				{
+				Move("M", 2)			;click through levelup popup
+
+			}
 			if count > 25
 			{
-				levelup:=CheckScreen("popup", "levelup", 1)
-				if levelup
-				{
-					Move("M", 2)			;click through popup
-				}
-				else
-				{
-					Debug3 = Stuck collecting rewards.
-					PB("Stuck collecting rewards. Attempting unstuck.")
-					UnStuck()
-					return
-				}
+				Debug3 = Stuck collecting rewards.
+				PB("Stuck collecting rewards. Attempting unstuck.")
+				UnStuck()
+				return
 			}
 		}
 		If step = 2
 		{
-			debug = Collect Rewards - Step2 (%count%)
+			debug3 = Collect Rewards - Step2 (%count%)
 			reward:=CheckScreen("fight", "reward2", 1)
+			if count > 10
+			{
+				reward1:=CheckScreen("fight", "reward1")
+				reward3:=CheckScreen("fight", "reward4")
+				if reward1
+				{
+					step:=1
+					reward1=
+					reward3=
+				}
+				else if reward3
+				{
+					step:=3
+					reward1=
+					reward3=
+				}
+			}
 		}
 		If step = 3
 		{
-			debug = Collect Rewards - Step3 (%count%)
+			debug3 = Collect Rewards - Step3 (%count%)
 			reward:=CheckScreen("fight", "reward4", 1)
+			if count > 10
+			{
+				reward1:=CheckScreen("fight", "reward1")
+				reward3:=CheckScreen("fight", "reward4")
+				if reward1
+				{
+					step:=1
+					reward1=
+					reward3=
+				}
+				else if reward3
+				{
+					step:=3
+					reward1=
+					reward3=
+				}
+			}
 		}
 		if step = 4
 		{
@@ -233,15 +286,23 @@ CollectRewards()
 		}
 		if reward
 		{
-			sleep, 1000
+			Move("M", , 500)					;attempt to click through unit levelup
 			Move("M", , 4000, , 1.8)
 			step+=1
+		}
+		else
+		{
+			count+=1
+			sleep, 1000
 		}
 ;	Move("M", 4, 4000, , 1.8)
 	}
 	return
 }
-
+ClearDungeon()
+{
+	
+}
 ClearZone(z, m, fc)
 {
 	FightRound := 1
@@ -293,7 +354,14 @@ ClearZone(z, m, fc)
 	
 	if ( FightPath = ERROR ) || !FightPath							;Check if imagefile defined
 	{
-		FightPath = AUTO
+		if m = Dungeon
+		{
+			FightPath = DAUTO								;set dungeon auto
+		}
+		else
+		{
+			FightPath = AUTO
+		}
 	}
 	else
 	{
@@ -301,7 +369,14 @@ ClearZone(z, m, fc)
 		IfNotExist, %FightPath%
 		{
 			PB("Missing Fight Path, Defaulting to AUTO.")
-			FightPath = AUTO								;defualt to auto if missing fight path
+			if m = Dungeon
+			{
+				FightPath = DAUTO								;set dungeon auto
+			}
+			else
+			{
+				FightPath = AUTO								;defualt to auto if missing fight path
+			}
 		}
 	}
 	

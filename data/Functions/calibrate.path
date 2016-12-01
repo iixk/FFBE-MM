@@ -1,5 +1,7 @@
+TakeImg,misc,crash,545,37,596,64
 TakeImg,fight,step1,247,226,350,243
 M,,,,1.41
+M,,6000,,1.8
 TakeImg,fight,step2,275,224,314,237
 M,,,,.77
 TakeImg,fight,step3,246,880,272,909

@@ -19,6 +19,7 @@ Global ImgFileOn
 Global Energy
 Global FightMode
 Global SpendLapis
+Global Lapis
 Global ImagePath
 Global FightPath
 
@@ -81,12 +82,18 @@ LoadConfig()
 	IniRead, ImgFileOn, %A_ScriptDir%/data/config/config.ini, ImageSearch, GilSearch
 	IniRead, FightMode, %A_ScriptDir%/data/config/config.ini, FightMode, Method
 	IniRead, SpendLapis, %A_ScriptDir%/data/config/config.ini, Options, SpendLapis
+	IniRead, Lapis, %A_ScriptDir%/data/config/config.ini, Options, LapisToSpend
 	
 	;Cleanup new settings on old config files.
 	if SpendLapis = ERROR
 	{
-		IniWrite, % "", %A_ScriptDir%/data/config/config.ini, Options, SpendLapis
-		SpendLapis =
+		IniWrite, 0, %A_ScriptDir%/data/config/config.ini, Options, LapisToSpend
+		Lapis := 0
+	}
+	if SpendLapis = ERROR
+	{
+		IniWrite, 0, %A_ScriptDir%/data/config/config.ini, Options, SpendLapis
+		SpendLapis := 0
 	}
 	if FightMode = ERROR
 	{
