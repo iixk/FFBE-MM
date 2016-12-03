@@ -1,10 +1,10 @@
 /r/FFBE trashedd
 
-
 ##########################
 First time setup
 ##########################
 
+-Download/install AHK AutoHotKey - download at http://ahkscript.org/
 -Run FFBE - MM.ahk as admin
 -Goto Nox
 -Follow directions on top of screen.
